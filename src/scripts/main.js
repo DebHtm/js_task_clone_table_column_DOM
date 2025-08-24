@@ -6,17 +6,28 @@ const tbody = document.querySelector('tbody');
 
 function addColumn() {
   for (let i = 0; i < arguments.length; i++) {
-    const rows = arguments[i].rows;
+    const section = arguments[i];
+
+    if (!section) {
+      continue;
+    }
+
+    const rows = section.rows;
+    const isHead = section.tagName === 'THEAD';
 
     for (let k = 0; k < rows.length; k++) {
       const row = rows[k];
 
       if (row.cells.length < 2) {
+        const cell = document.createElement(isHead ? 'th' : 'td');
+        const ref = row.lastElementChild;
+
+        row.insertBefore(cell, ref);
         continue;
       }
 
       const copy = row.cells[1];
-      const last = row.cells[row.cells.length - 1];
+      const last = row.lastElementChild;
       const clone = copy.cloneNode(true);
 
       row.insertBefore(clone, last);
@@ -25,5 +36,5 @@ function addColumn() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  addColumn(thead, tfoot, tbody);
+  addColumn(thead, tbody, tfoot);
 });
